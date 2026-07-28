@@ -194,6 +194,36 @@
 
   /* ---------- SERVICES ---------- */
   #services{background:var(--ink)}
+  .menu-search{
+    position:relative;margin:0 0 1rem;max-width:440px;
+  }
+  .menu-search input{
+    width:100%;
+    background:rgba(232,223,210,.04);
+    border:1px solid rgba(232,223,210,.18);
+    color:var(--beige);
+    font-family:'Jost',sans-serif;font-size:1rem;font-weight:400;
+    padding:.85rem 2.6rem .85rem 1.1rem;
+    border-radius:2px;
+    transition:border-color .3s,background .3s;
+  }
+  .menu-search input::placeholder{color:var(--beige-deep);opacity:.7}
+  .menu-search input:focus{
+    outline:none;border-color:var(--gold);background:rgba(217,180,65,.06);
+  }
+  .menu-search input::-webkit-search-cancel-button{
+    -webkit-appearance:none;height:14px;width:14px;
+    background:var(--gold-pale);
+    -webkit-mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M18 6L6 18M6 6l12 12' stroke='black' stroke-width='2.5' stroke-linecap='round'/%3E%3C/svg%3E") center/contain no-repeat;
+    cursor:pointer;
+  }
+  .menu-search-icon{
+    position:absolute;right:1rem;top:50%;transform:translateY(-50%);
+    color:var(--gold);pointer-events:none;display:flex;
+  }
+  .menu-noresults{
+    color:var(--beige-deep);font-size:1rem;margin:.5rem 0 0;
+  }
   .menu{border-top:1px solid rgba(232,223,210,.12)}
   .menu-subhead{
     font-family:'Cormorant',serif;font-weight:500;
@@ -434,6 +464,18 @@
       <h2 data-html-en="Every set starts with a <em>mapping.</em>" data-html-es="Cada set empieza con un <em>diseño.</em>">Every set starts with a <em>mapping.</em></h2>
       <p data-en="Prices below are for the full service. A $30 deposit is required to book and it goes toward your total on the day of your appointment. If you are coming from another studio and need your current extensions removed first, choose Book with Removal to add a removal for $30." data-es="Los precios de abajo son del servicio completo. Se requiere un depósito de $30 para reservar y se aplica a tu total el día de tu cita. Si vienes de otro estudio y necesitas remover tus extensiones actuales primero, elige Reservar con Remoción para agregar la remoción por $30.">Prices below are for the full service. A $30 deposit is required to book and it goes toward your total on the day of your appointment. If you are coming from another studio and need your current extensions removed first, choose Book with Removal to add a removal for $30.</p>
     </div>
+
+    <div class="menu-search reveal">
+      <input type="search" id="serviceSearch" autocomplete="off"
+        data-en-placeholder="Search services… (e.g. classic, refill, brow)"
+        data-es-placeholder="Buscar servicios… (ej. clásico, relleno, cejas)"
+        placeholder="Search services… (e.g. classic, refill, brow)"
+        aria-label="Search services">
+      <span class="menu-search-icon" aria-hidden="true">
+        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="11" cy="11" r="7"></circle><line x1="21" y1="21" x2="16.5" y2="16.5"></line></svg>
+      </span>
+    </div>
+    <p class="menu-noresults" id="menuNoResults" hidden data-en="No services match your search." data-es="Ningún servicio coincide con tu búsqueda.">No services match your search.</p>
 
     <div class="menu">
       <div class="item reveal">
@@ -862,6 +904,10 @@
         const val = el.getAttribute('data-html-' + lang);
         if (val !== null) el.innerHTML = val;
       });
+      // search input placeholder
+      document.querySelectorAll('[data-' + lang + '-placeholder]').forEach(el => {
+        el.setAttribute('placeholder', el.getAttribute('data-' + lang + '-placeholder'));
+      });
       body.setAttribute('data-lang', lang);
       document.documentElement.setAttribute('lang', lang);
       try { localStorage.setItem('yls-lang', lang); } catch(e){}
@@ -879,6 +925,53 @@
     document.getElementById('langToggle').addEventListener('click', () => {
       applyLang(body.getAttribute('data-lang') === 'es' ? 'en' : 'es');
     });
+
+    /* ---------- Service search filter ---------- */
+    (function(){
+      const input = document.getElementById('serviceSearch');
+      if (!input) return;
+      const noResults = document.getElementById('menuNoResults');
+      const items = Array.from(document.querySelectorAll('#services .menu .item'));
+
+      // build a searchable text blob for each item (both languages)
+      items.forEach(item => {
+        const parts = [];
+        item.querySelectorAll('[data-en]').forEach(el => {
+          if (el.getAttribute('data-en')) parts.push(el.getAttribute('data-en'));
+          if (el.getAttribute('data-es')) parts.push(el.getAttribute('data-es'));
+        });
+        item.querySelectorAll('[data-html-en]').forEach(el => {
+          if (el.getAttribute('data-html-en')) parts.push(el.getAttribute('data-html-en'));
+          if (el.getAttribute('data-html-es')) parts.push(el.getAttribute('data-html-es'));
+        });
+        item._search = parts.join(' ').toLowerCase();
+      });
+
+      // strip accents so "clasico" matches "clásico"
+      const norm = s => s.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'');
+
+      function runFilter(){
+        const q = norm(input.value.trim());
+        let anyVisible = false;
+        items.forEach(item => {
+          const match = q === '' || norm(item._search).includes(q);
+          item.style.display = match ? '' : 'none';
+          if (match) anyVisible = true;
+        });
+        // hide a subheading + its menu block if all its items are hidden
+        document.querySelectorAll('#services .menu').forEach(menu => {
+          const visible = menu.querySelectorAll('.item:not([style*="display: none"])').length;
+          menu.style.display = visible ? '' : 'none';
+          const prev = menu.previousElementSibling;
+          if (prev && prev.classList.contains('menu-subhead')){
+            prev.style.display = visible ? '' : 'none';
+          }
+        });
+        if (noResults) noResults.hidden = anyVisible;
+      }
+
+      input.addEventListener('input', runFilter);
+    })();
   })();
 </script>
 </body>
