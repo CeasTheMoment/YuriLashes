@@ -336,6 +336,124 @@
     color:var(--beige-deep);
   }
 
+  /* ---------- PRE-BOOKING MODAL ---------- */
+  .modal-backdrop{
+    position:fixed;inset:0;z-index:100;
+    background:rgba(5,5,6,.82);
+    backdrop-filter:blur(5px);
+    display:flex;align-items:center;justify-content:center;
+    padding:1rem;
+    opacity:0;transition:opacity .3s ease;
+  }
+  .modal-backdrop[hidden]{display:none}
+  .modal-backdrop.open{opacity:1}
+  .modal{
+    position:relative;
+    width:min(580px,100%);max-height:90svh;overflow-y:auto;
+    background:var(--ink-soft);
+    border:1px solid var(--line);
+    padding:clamp(1.6rem,4vw,2.5rem);
+    transform:translateY(16px);
+    transition:transform .35s cubic-bezier(.22,1,.36,1);
+  }
+  .modal-backdrop.open .modal{transform:none}
+  .modal h2{font-size:clamp(1.7rem,3.4vw,2.2rem);margin-bottom:.4rem}
+  .modal .eyebrow{margin-bottom:.9rem}
+  .modal-close{
+    position:absolute;top:.7rem;right:.9rem;
+    background:transparent;border:0;cursor:pointer;
+    color:var(--beige-deep);font-size:1.7rem;line-height:1;
+    padding:.3rem .5rem;transition:color .3s;
+  }
+  .modal-close:hover,.modal-close:focus-visible{color:var(--gold-pale)}
+  .modal-service{
+    font-family:'Cormorant',serif;font-size:1.35rem;
+    color:var(--gold-pale);margin-bottom:.2rem;
+  }
+  .modal-lede{color:var(--beige-deep);font-size:.98rem;margin-bottom:1.6rem}
+
+  .step{
+    display:grid;grid-template-columns:auto 1fr;gap:0 1rem;
+    padding:1.2rem 0;border-top:1px solid rgba(232,223,210,.12);
+  }
+  .step[hidden],.check[hidden],.form-embed[hidden]{display:none}
+  .step-num{
+    font-family:'Cormorant',serif;font-size:1.6rem;
+    color:var(--gold);line-height:1;padding-top:.15rem;
+  }
+  .step h3{
+    font-size:1.02rem;font-weight:600;color:var(--white);
+    letter-spacing:.01em;line-height:1.4;
+  }
+  .step p{color:var(--beige-deep);font-size:.92rem;margin-top:.25rem}
+  .step-action{grid-column:2;margin-top:.9rem}
+  .step-btn{
+    display:inline-block;
+    border:1px solid var(--gold);color:var(--gold-pale);
+    background:transparent;cursor:pointer;font-family:inherit;
+    padding:.6rem 1.3rem;font-size:.76rem;font-weight:600;
+    letter-spacing:.12em;text-transform:uppercase;
+    transition:background .3s,color .3s;
+  }
+  .step-btn:hover,.step-btn:focus-visible{background:var(--gold);color:var(--ink)}
+  .step-btn-alt{margin-left:.7rem}
+  @media(max-width:480px){
+    .step-btn-alt{margin-left:0;margin-top:.6rem}
+    .step-action .step-btn{display:inline-block}
+  }
+  .step-alt{
+    background:transparent;border:0;cursor:pointer;
+    font-family:inherit;font-size:.78rem;font-weight:500;
+    letter-spacing:.06em;color:var(--beige-deep);
+    margin-left:1rem;border-bottom:1px solid rgba(232,223,210,.3);
+    padding:0 0 .15rem;transition:color .3s,border-color .3s;
+  }
+  .step-alt:hover,.step-alt:focus-visible{color:var(--gold-pale);border-color:var(--gold)}
+  @media(max-width:480px){
+    .step-alt{margin-left:0;margin-top:.8rem;display:block}
+  }
+  .form-embed{
+    grid-column:1/-1;margin-top:1rem;
+    border:1px solid rgba(232,223,210,.15);
+    background:var(--white);
+    height:60vh;
+  }
+  .form-embed iframe{width:100%;height:100%;border:0;display:block}
+
+  .modal-confirm{
+    border-top:1px solid rgba(232,223,210,.12);
+    padding-top:1.3rem;margin-top:.4rem;
+  }
+  .check{
+    display:flex;align-items:flex-start;gap:.7rem;
+    cursor:pointer;margin-bottom:.7rem;
+    font-size:.94rem;color:var(--beige);
+  }
+  .check input{
+    appearance:none;-webkit-appearance:none;
+    width:20px;height:20px;flex:0 0 20px;margin-top:.25rem;
+    border:1px solid var(--gold);background:transparent;
+    cursor:pointer;border-radius:2px;transition:background .2s;
+  }
+  .check input:checked{background:var(--gold)}
+  .check input:checked::after{
+    content:"✓";display:flex;align-items:center;justify-content:center;
+    height:100%;color:var(--ink);font-size:.85rem;font-weight:700;
+  }
+  .modal-continue{
+    width:100%;margin-top:1rem;
+    background:var(--gold);color:var(--ink);
+    border:0;cursor:pointer;font-family:inherit;
+    padding:1rem 1.5rem;font-size:.82rem;font-weight:600;
+    letter-spacing:.14em;text-transform:uppercase;
+    transition:background .3s,opacity .3s;
+  }
+  .modal-continue:hover:not(:disabled){background:var(--gold-pale)}
+  .modal-continue:disabled{opacity:.35;cursor:not-allowed}
+  .modal-foot{
+    margin-top:.9rem;font-size:.82rem;color:#9A9184;text-align:center;
+  }
+
   /* ---------- POLICIES ---------- */
   #policies{background:var(--ink-soft);border-top:1px solid rgba(232,223,210,.12)}
   .pol-grid{
@@ -385,6 +503,7 @@
   :focus-visible{outline:2px solid var(--gold);outline-offset:3px}
   .reveal{opacity:0;transform:translateY(24px);transition:opacity .9s ease,transform .9s ease}
   .reveal.in{opacity:1;transform:none}
+  body.modal-open{overflow:hidden}
   @media(prefers-reduced-motion:reduce){
     *,.arc path,.arc line{animation:none!important;transition:none!important}
     .reveal{opacity:1;transform:none}
@@ -504,7 +623,7 @@
           <h3 data-en="Hawaiian Full Set" data-es="Set Hawaiano Completo">Hawaiian Full Set</h3>
           <p data-en="Wispy, textured spikes for a soft but noticeable finish." data-es="Puntas texturizadas y ligeras para un acabado suave pero notorio.">Wispy, textured spikes for a soft but noticeable finish.</p>
         </div>
-        <div class="price" data-html-en="$90<small>$30 deposit</small>" data-html-es="$90<small>$30 depósito</small>">$90<small>$30 deposit</small></div>
+        <div class="price" data-html-en="$100<small>$30 deposit</small>" data-html-es="$100<small>$30 depósito</small>">$100<small>$30 deposit</small></div>
         <div class="book-links"><a href="https://cal.com/yuri-lashes-xnsafm/hawaiian-full-set" class="book-link" target="_blank" rel="noopener" data-en="Book →" data-es="Reservar →">Book →</a><a href="https://cal.com/yuri-lashes-xnsafm/hawaiian-full-set-removal-110" class="book-link-alt" target="_blank" rel="noopener" data-en="Book with Removal (+$30) →" data-es="Reservar con Remoción (+$30) →">Book with Removal (+$30) →</a></div>
       </div>
 
@@ -583,7 +702,7 @@
           <h3 data-en="Hawaiian Refill" data-es="Relleno Hawaiano">Hawaiian Refill</h3>
           <p data-en="Keeps your Hawaiian set full and textured." data-es="Mantiene tu set hawaiano lleno y con textura.">Keeps your Hawaiian set full and textured.</p>
         </div>
-        <div class="price" data-html-en="$50<small>$30 deposit</small>" data-html-es="$50<small>$30 depósito</small>">$50<small>$30 deposit</small></div>
+        <div class="price" data-html-en="$80<small>$30 deposit</small>" data-html-es="$80<small>$30 depósito</small>">$80<small>$30 deposit</small></div>
         <a href="https://cal.com/yuri-lashes-xnsafm/hawaiian-refill-50" class="book-link" target="_blank" rel="noopener" data-en="Book →" data-es="Reservar →">Book →</a>
       </div>
 
@@ -603,7 +722,7 @@
           <h3 data-en="Volume Refill" data-es="Relleno de Volumen">Volume Refill</h3>
           <p data-en="Keeps your volume set full and fluffy." data-es="Mantiene tu set de volumen lleno y esponjoso.">Keeps your volume set full and fluffy.</p>
         </div>
-        <div class="price" data-html-en="$60<small>$30 deposit</small>" data-html-es="$60<small>$30 depósito</small>">$60<small>$30 deposit</small></div>
+        <div class="price" data-html-en="$70<small>$30 deposit</small>" data-html-es="$70<small>$30 depósito</small>">$70<small>$30 deposit</small></div>
         <a href="https://cal.com/yuri-lashes-xnsafm/volume-refill-60" class="book-link" target="_blank" rel="noopener" data-en="Book →" data-es="Reservar →">Book →</a>
       </div>
 
@@ -613,7 +732,7 @@
           <h3 data-en="Mega Volume Refill" data-es="Relleno de Mega Volumen">Mega Volume Refill</h3>
           <p data-en="Keeps your mega volume set full and dramatic." data-es="Mantiene tu set de mega volumen lleno y dramático.">Keeps your mega volume set full and dramatic.</p>
         </div>
-        <div class="price" data-html-en="$60<small>$30 deposit</small>" data-html-es="$60<small>$30 depósito</small>">$60<small>$30 deposit</small></div>
+        <div class="price" data-html-en="$70<small>$30 deposit</small>" data-html-es="$70<small>$30 depósito</small>">$70<small>$30 deposit</small></div>
         <a href="https://cal.com/yuri-lashes-xnsafm/mega-volume-refill-60" class="book-link" target="_blank" rel="noopener" data-en="Book →" data-es="Reservar →">Book →</a>
       </div>
     </div>
@@ -752,7 +871,7 @@
 
       <div class="pol-card reveal">
         <h3 data-en="Payment" data-es="Pagos">Payment</h3>
-        <p data-en="A non refundable deposit of $30 is required for all appointments and is applied toward your service." data-es="Se requiere un depósito no reembolsable de $30 para todas las citas y se aplica a tu servicio.">A non refundable deposit of $30 is required for all appointments and is applied toward your service.</p>
+        <p data-en="A non refundable deposit of $30 is required for all appointments and is sent through Venmo or PayPal when you book. It is applied toward your service." data-es="Se requiere un depósito no reembolsable de $30 para todas las citas y se envía por Venmo o PayPal al reservar. Se aplica a tu servicio.">A non refundable deposit of $30 is required for all appointments and is sent through Venmo or PayPal when you book. It is applied toward your service.</p>
         <p data-en="The remaining balance is cash only." data-es="El saldo restante se paga únicamente en efectivo.">The remaining balance is cash only.</p>
       </div>
     </div>
@@ -767,13 +886,13 @@
     <div class="sec-head reveal">
       <p class="eyebrow" data-en="Booking" data-es="Reservaciones">Booking</p>
       <h2 data-html-en="Choose a service, <em>pick your time.</em>" data-html-es="Elige un servicio <em>y tu horario.</em>">Choose a service, <em>pick your time.</em></h2>
-      <p data-en="A deposit is taken when you book. It comes straight off your total on the day." data-es="Se toma un depósito al reservar y se descuenta de tu total el día de la cita.">A deposit is taken when you book. It comes straight off your total on the day.</p>
+      <p data-en="Send your $30 deposit on Venmo or PayPal and sign the consent form, then pick your time. The deposit comes straight off your total on the day." data-es="Envía tu depósito de $30 por Venmo o PayPal y firma el formulario de consentimiento, luego elige tu horario. El depósito se descuenta de tu total el día de la cita.">Send your $30 deposit on Venmo or PayPal and sign the consent form, then pick your time. The deposit comes straight off your total on the day.</p>
     </div>
 
     <!-- ==================================================================
          BOOKING BUTTONS
-         Each button opens that service's Cal.com page, where the client
-         picks a time and pays the $30 deposit.
+         Each button opens the pre-booking pop up (deposit + consent form),
+         then continues to that service's Cal.com page.
          To change a link, update the href below to match the Cal.com slug.
          ================================================================== -->
     <div class="book-grid reveal">
@@ -787,7 +906,7 @@
       </a>
       <a class="book-card" href="https://cal.com/yuri-lashes-xnsafm/hawaiian-full-set" target="_blank" rel="noopener">
         <span class="bc-name" data-en="Hawaiian Full Set" data-es="Set Hawaiano Completo">Hawaiian Full Set</span>
-        <span class="bc-price">$90</span>
+        <span class="bc-price">$100</span>
       </a>
       <a class="book-card" href="https://cal.com/yuri-lashes-xnsafm/egyptian-full-set-100" target="_blank" rel="noopener">
         <span class="bc-name" data-en="Egyptian Full Set" data-es="Set Egipcio Completo">Egyptian Full Set</span>
@@ -815,7 +934,7 @@
       </a>
       <a class="book-card" href="https://cal.com/yuri-lashes-xnsafm/hawaiian-refill-50" target="_blank" rel="noopener">
         <span class="bc-name" data-en="Hawaiian Refill" data-es="Relleno Hawaiano">Hawaiian Refill</span>
-        <span class="bc-price">$50</span>
+        <span class="bc-price">$80</span>
       </a>
       <a class="book-card" href="https://cal.com/yuri-lashes-xnsafm/hybrid-refill-50" target="_blank" rel="noopener">
         <span class="bc-name" data-en="Hybrid Refill" data-es="Relleno Híbrido">Hybrid Refill</span>
@@ -823,11 +942,11 @@
       </a>
       <a class="book-card" href="https://cal.com/yuri-lashes-xnsafm/volume-refill-60" target="_blank" rel="noopener">
         <span class="bc-name" data-en="Volume Refill" data-es="Relleno de Volumen">Volume Refill</span>
-        <span class="bc-price">$60</span>
+        <span class="bc-price">$70</span>
       </a>
       <a class="book-card" href="https://cal.com/yuri-lashes-xnsafm/mega-volume-refill-60" target="_blank" rel="noopener">
         <span class="bc-name" data-en="Mega Volume Refill" data-es="Relleno de Mega Volumen">Mega Volume Refill</span>
-        <span class="bc-price">$60</span>
+        <span class="bc-price">$70</span>
       </a>
       <a class="book-card" href="https://cal.com/yuri-lashes-xnsafm/brow-lamination-30" target="_blank" rel="noopener">
         <span class="bc-name" data-en="Brow Lamination" data-es="Laminado de Cejas">Brow Lamination</span>
@@ -877,6 +996,65 @@
     </div>
   </div>
 </footer>
+
+<!-- ==================================================================
+     PRE-BOOKING POP UP
+     Opens on every "Book" link before the Cal.com calendar.
+     Step 1: send the $30 deposit on Venmo.
+     Step 2: sign the consent form.
+     To change the Venmo or form link, edit VENMO_URL / FORM_URL
+     in the script at the bottom of this file.
+     ================================================================== -->
+<div class="modal-backdrop" id="bookingModal" role="dialog" aria-modal="true" aria-labelledby="bookingModalTitle" hidden>
+  <div class="modal">
+    <button class="modal-close" id="modalClose" type="button" aria-label="Close / Cerrar">&times;</button>
+
+    <p class="eyebrow" data-en="Before you book" data-es="Antes de reservar">Before you book</p>
+    <h2 id="bookingModalTitle" data-html-en="Two quick <em>steps.</em>" data-html-es="Dos pasos <em>rápidos.</em>">Two quick <em>steps.</em></h2>
+    <p class="modal-service" id="modalService"></p>
+    <p class="modal-lede" id="modalLede" data-en="Your time slot is only held once the deposit is in and the consent form is signed." data-es="Tu horario solo se aparta cuando recibimos el depósito y firmas el formulario de consentimiento.">Your time slot is only held once the deposit is in and the consent form is signed.</p>
+
+    <div class="step" id="stepDeposit">
+      <span class="step-num">1</span>
+      <div>
+        <h3 data-en="Send your $30 deposit" data-es="Envía tu depósito de $30">Send your $30 deposit</h3>
+        <p data-en="Send on Venmo or PayPal to Yuri Garcia Gonzalez, and put your name and the service in the note. The $30 comes off your total on the day. Deposits are not refunded." data-es="Envía por Venmo o PayPal a Yuri Garcia Gonzalez, y escribe tu nombre y el servicio en la nota. Los $30 se descuentan de tu total el día de la cita. Los depósitos no se reembolsan.">Send on Venmo or PayPal to Yuri Garcia Gonzalez, and put your name and the service in the note. The $30 comes off your total on the day. Deposits are not refunded.</p>
+      </div>
+      <div class="step-action">
+        <a class="step-btn" id="venmoBtn" href="https://account.venmo.com/u/Yuri-Garcia-50" target="_blank" rel="noopener" data-en="Pay $30 on Venmo" data-es="Pagar $30 por Venmo">Pay $30 on Venmo</a>
+        <a class="step-btn step-btn-alt" id="paypalBtn" href="https://www.paypal.com/paypalme/YuriGarciaGonzalez" target="_blank" rel="noopener" data-en="Pay $30 on PayPal" data-es="Pagar $30 por PayPal">Pay $30 on PayPal</a>
+      </div>
+    </div>
+
+    <div class="step" id="stepForm">
+      <span class="step-num" id="stepFormNum">2</span>
+      <div>
+        <h3 data-en="Sign the consent form" data-es="Firma el formulario de consentimiento">Sign the consent form</h3>
+        <p data-en="One form per client, before your first appointment." data-es="Un formulario por clienta, antes de tu primera cita.">One form per client, before your first appointment.</p>
+      </div>
+      <div class="step-action">
+        <button class="step-btn" id="formToggle" type="button" data-en="Open the form" data-es="Abrir el formulario">Open the form</button>
+        <a class="step-alt" id="formRedirect" href="https://docs.google.com/forms/d/e/1FAIpQLSfFCVziXWLmgMneBZ3BWW5Nq6fq3tBhinnsw_2ZAYsflJknRg/viewform" target="_blank" rel="noopener" data-en="or open in a new tab" data-es="o ábrelo en una pestaña nueva">or open in a new tab</a>
+      </div>
+      <div class="form-embed" id="formEmbed" hidden>
+        <iframe id="formFrame" data-src="https://docs.google.com/forms/d/e/1FAIpQLSfFCVziXWLmgMneBZ3BWW5Nq6fq3tBhinnsw_2ZAYsflJknRg/viewform?embedded=true" title="Consent form">Loading…</iframe>
+      </div>
+    </div>
+
+    <div class="modal-confirm">
+      <label class="check" id="chkDepositWrap">
+        <input type="checkbox" id="chkDeposit">
+        <span data-en="I sent my $30 deposit" data-es="Envié mi depósito de $30">I sent my $30 deposit</span>
+      </label>
+      <label class="check">
+        <input type="checkbox" id="chkForm">
+        <span data-en="I signed the consent form" data-es="Firmé el formulario de consentimiento">I signed the consent form</span>
+      </label>
+      <button class="modal-continue" id="modalContinue" type="button" disabled data-en="Continue to the calendar" data-es="Continuar al calendario">Continue to the calendar</button>
+      <p class="modal-foot" data-en="Questions? Message the studio on Instagram before you book." data-es="¿Dudas? Escríbele al estudio por Instagram antes de reservar.">Questions? Message the studio on Instagram before you book.</p>
+    </div>
+  </div>
+</div>
 
 <script>
   document.getElementById('yr').textContent = new Date().getFullYear();
@@ -972,6 +1150,128 @@
 
       input.addEventListener('input', runFilter);
     })();
+  })();
+
+  /* ---------- Pre-booking pop up: deposit + consent form ---------- */
+  (function(){
+    /* ---- EDIT THESE LINKS IF THEY EVER CHANGE ---- */
+    const VENMO_URL  = 'https://account.venmo.com/u/Yuri-Garcia-50';
+    const PAYPAL_URL = 'https://www.paypal.com/paypalme/YuriGarciaGonzalez';
+    const FORM_URL   = 'https://docs.google.com/forms/d/e/1FAIpQLSfFCVziXWLmgMneBZ3BWW5Nq6fq3tBhinnsw_2ZAYsflJknRg/viewform';
+    /* Services that do not take a deposit — the deposit step is skipped for these */
+    const NO_DEPOSIT_SLUGS = ['/brow-wax', '/mustach-wax'];
+
+    const modal      = document.getElementById('bookingModal');
+    if (!modal) return;
+    const serviceEl  = document.getElementById('modalService');
+    const stepDep    = document.getElementById('stepDeposit');
+    const stepFormNo = document.getElementById('stepFormNum');
+    const depWrap    = document.getElementById('chkDepositWrap');
+    const chkDep     = document.getElementById('chkDeposit');
+    const chkForm    = document.getElementById('chkForm');
+    const continueBtn= document.getElementById('modalContinue');
+    const formToggle  = document.getElementById('formToggle');
+    const formRedirect= document.getElementById('formRedirect');
+    const formEmbed   = document.getElementById('formEmbed');
+    const formFrame   = document.getElementById('formFrame');
+    const closeBtn    = document.getElementById('modalClose');
+
+    document.getElementById('venmoBtn').href = VENMO_URL;
+    document.getElementById('paypalBtn').href = PAYPAL_URL;
+    formRedirect.href = FORM_URL;
+
+    let targetUrl = null;
+    let depositNeeded = true;
+    let lastFocus = null;
+
+    function updateContinue(){
+      continueBtn.disabled = !(chkForm.checked && (chkDep.checked || !depositNeeded));
+    }
+
+    function openModal(url, nameEn, nameEs){
+      targetUrl = url;
+      depositNeeded = !NO_DEPOSIT_SLUGS.some(s => url.includes(s));
+
+      // service name, in both languages so the EN/ES toggle keeps working
+      serviceEl.setAttribute('data-en', nameEn || '');
+      serviceEl.setAttribute('data-es', nameEs || nameEn || '');
+      serviceEl.textContent = (document.body.getAttribute('data-lang') === 'es' ? (nameEs || nameEn) : nameEn) || '';
+
+      // deposit step only when the service takes one
+      stepDep.hidden = !depositNeeded;
+      depWrap.hidden = !depositNeeded;
+      stepFormNo.textContent = depositNeeded ? '2' : '1';
+
+      // fresh start every time
+      chkDep.checked = false;
+      chkForm.checked = false;
+      updateContinue();
+      formEmbed.hidden = true;
+      formToggle.textContent = formToggle.getAttribute('data-' + (document.body.getAttribute('data-lang') || 'en'));
+
+      lastFocus = document.activeElement;
+      modal.hidden = false;
+      document.body.classList.add('modal-open');
+      requestAnimationFrame(() => modal.classList.add('open'));
+      setTimeout(() => closeBtn.focus(), 60);
+    }
+
+    function closeModal(){
+      modal.classList.remove('open');
+      document.body.classList.remove('modal-open');
+      setTimeout(() => { modal.hidden = true; }, 300);
+      if (lastFocus) lastFocus.focus();
+    }
+
+    // every link that points at the Cal.com calendar goes through the pop up
+    document.addEventListener('click', function(e){
+      const link = e.target.closest('a[href*="cal.com/yuri-lashes"]');
+      if (!link) return;
+      e.preventDefault();
+
+      let nameEn = '', nameEs = '';
+      const card = link.closest('.book-card');
+      if (card){
+        const n = card.querySelector('.bc-name');
+        nameEn = n.getAttribute('data-en'); nameEs = n.getAttribute('data-es');
+      } else {
+        const item = link.closest('.item');
+        if (item){
+          const h = item.querySelector('h3');
+          nameEn = h.getAttribute('data-en'); nameEs = h.getAttribute('data-es');
+          if (link.classList.contains('book-link-alt')){
+            nameEn += ' + Removal'; nameEs += ' + Remoción';
+          }
+        }
+      }
+      openModal(link.href, nameEn, nameEs);
+    });
+
+    // fill the form without leaving the page
+    formToggle.addEventListener('click', () => {
+      const show = formEmbed.hidden;
+      if (show && !formFrame.src) formFrame.src = formFrame.getAttribute('data-src');
+      formEmbed.hidden = !show;
+      const es = document.body.getAttribute('data-lang') === 'es';
+      formToggle.textContent = show
+        ? (es ? 'Ocultar el formulario' : 'Hide the form')
+        : (es ? 'Abrir el formulario' : 'Open the form');
+    });
+
+    chkDep.addEventListener('change', updateContinue);
+    chkForm.addEventListener('change', updateContinue);
+
+    continueBtn.addEventListener('click', () => {
+      if (continueBtn.disabled || !targetUrl) return;
+      window.open(targetUrl, '_blank', 'noopener');
+      closeModal();
+    });
+
+    closeBtn.addEventListener('click', closeModal);
+    modal.addEventListener('click', e => { if (e.target === modal) closeModal(); });
+    document.addEventListener('keydown', e => {
+      if (e.key === 'Escape' && !modal.hidden) closeModal();
+    });
   })();
 </script>
 </body>
