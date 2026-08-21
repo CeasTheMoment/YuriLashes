@@ -368,25 +368,64 @@
   .modal-close:hover,.modal-close:focus-visible{color:var(--gold-pale)}
   .modal-service{
     font-family:'Cormorant',serif;font-size:1.35rem;
-    color:var(--gold-pale);margin-bottom:.2rem;
+    color:var(--gold-pale);margin-bottom:1.1rem;
   }
-  .modal-lede{color:var(--beige-deep);font-size:.98rem;margin-bottom:1.6rem}
+  .modal-lede{color:var(--beige-deep);font-size:.98rem;margin-bottom:1.2rem}
 
-  .step{
-    display:grid;grid-template-columns:auto 1fr;gap:0 1rem;
-    padding:1.2rem 0;border-top:1px solid rgba(232,223,210,.12);
+  /* Tabs */
+  .modal-tabs{
+    display:flex;gap:.5rem;margin-bottom:1.4rem;
+    border-bottom:1px solid rgba(232,223,210,.15);
   }
-  .step[hidden],.check[hidden],.form-embed[hidden]{display:none}
-  .step-num{
-    font-family:'Cormorant',serif;font-size:1.6rem;
-    color:var(--gold);line-height:1;padding-top:.15rem;
+  .modal-tab{
+    background:transparent;border:0;cursor:pointer;font-family:inherit;
+    color:var(--beige-deep);font-size:.78rem;font-weight:600;
+    letter-spacing:.1em;text-transform:uppercase;
+    padding:.7rem .3rem;margin-bottom:-1px;
+    border-bottom:2px solid transparent;
+    transition:color .3s,border-color .3s;
   }
+  .modal-tab + .modal-tab{margin-left:.6rem}
+  .modal-tab:hover,.modal-tab:focus-visible{color:var(--gold-pale)}
+  .modal-tab.active{color:var(--gold-pale);border-color:var(--gold)}
+  .modal-panel[hidden]{display:none}
+
+  .newcomer-note{
+    display:flex;gap:.6rem;align-items:flex-start;
+    background:rgba(217,180,65,.08);border:1px solid var(--line);
+    padding:.9rem 1rem;margin-bottom:1.3rem;
+    font-size:.88rem;color:var(--beige);line-height:1.5;
+  }
+  .newcomer-note::before{content:"✦";color:var(--gold);flex:0 0 auto}
+
+  .step{padding:0 0 1rem}
   .step h3{
     font-size:1.02rem;font-weight:600;color:var(--white);
     letter-spacing:.01em;line-height:1.4;
   }
   .step p{color:var(--beige-deep);font-size:.92rem;margin-top:.25rem}
-  .step-action{grid-column:2;margin-top:.9rem}
+
+  /* Payment method grid */
+  .pay-grid{
+    display:grid;grid-template-columns:1fr 1fr;gap:.7rem;margin-top:1rem;
+  }
+  .pay-btn{
+    display:flex;flex-direction:column;gap:.25rem;
+    border:1px solid var(--gold);padding:.8rem 1rem;
+    transition:background .3s,color .3s;
+  }
+  a.pay-btn{cursor:pointer}
+  .pay-btn:hover,.pay-btn:focus-visible{background:rgba(217,180,65,.1)}
+  .pay-btn-static{border-style:dashed;cursor:default}
+  .pay-name{
+    font-size:.78rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;
+    color:var(--gold-pale);
+  }
+  .pay-handle{font-size:.85rem;color:var(--beige);line-height:1.4}
+  @media(max-width:480px){
+    .pay-grid{grid-template-columns:1fr}
+  }
+
   .step-btn{
     display:inline-block;
     border:1px solid var(--gold);color:var(--gold-pale);
@@ -394,41 +433,28 @@
     padding:.6rem 1.3rem;font-size:.76rem;font-weight:600;
     letter-spacing:.12em;text-transform:uppercase;
     transition:background .3s,color .3s;
+    margin-top:1rem;
   }
   .step-btn:hover,.step-btn:focus-visible{background:var(--gold);color:var(--ink)}
-  .step-btn-alt{margin-left:.7rem}
-  @media(max-width:480px){
-    .step-btn-alt{margin-left:0;margin-top:.6rem}
-    .step-action .step-btn{display:inline-block}
-  }
-  .step-alt{
-    background:transparent;border:0;cursor:pointer;
-    font-family:inherit;font-size:.78rem;font-weight:500;
-    letter-spacing:.06em;color:var(--beige-deep);
-    margin-left:1rem;border-bottom:1px solid rgba(232,223,210,.3);
-    padding:0 0 .15rem;transition:color .3s,border-color .3s;
-  }
-  .step-alt:hover,.step-alt:focus-visible{color:var(--gold-pale);border-color:var(--gold)}
-  @media(max-width:480px){
-    .step-alt{margin-left:0;margin-top:.8rem;display:block}
-  }
+
   .form-embed{
-    grid-column:1/-1;margin-top:1rem;
+    margin-top:1rem;
     border:1px solid rgba(232,223,210,.15);
     background:var(--white);
-    height:60vh;
+    height:55vh;
   }
   .form-embed iframe{width:100%;height:100%;border:0;display:block}
 
   .modal-confirm{
     border-top:1px solid rgba(232,223,210,.12);
-    padding-top:1.3rem;margin-top:.4rem;
+    padding-top:1.3rem;margin-top:1rem;
   }
   .check{
     display:flex;align-items:flex-start;gap:.7rem;
     cursor:pointer;margin-bottom:.7rem;
     font-size:.94rem;color:var(--beige);
   }
+  .check[hidden]{display:none}
   .check input{
     appearance:none;-webkit-appearance:none;
     width:20px;height:20px;flex:0 0 20px;margin-top:.25rem;
@@ -1000,9 +1026,11 @@
 <!-- ==================================================================
      PRE-BOOKING POP UP
      Opens on every "Book" link before the Cal.com calendar.
-     Step 1: send the $30 deposit on Venmo.
-     Step 2: sign the consent form.
-     To change the Venmo or form link, edit VENMO_URL / FORM_URL
+     Deposit tab (default): payment options (Venmo, PayPal, Cash App, Zelle)
+       + one checkbox before continuing to Cal.com.
+     New Here tab: embedded consent form for first-time clients — they
+       sign it in place, then switch back to the Deposit tab.
+     To change any payment handle or the form link, edit the constants
      in the script at the bottom of this file.
      ================================================================== -->
 <div class="modal-backdrop" id="bookingModal" role="dialog" aria-modal="true" aria-labelledby="bookingModalTitle" hidden>
@@ -1010,49 +1038,64 @@
     <button class="modal-close" id="modalClose" type="button" aria-label="Close / Cerrar">&times;</button>
 
     <p class="eyebrow" data-en="Before you book" data-es="Antes de reservar">Before you book</p>
-    <h2 id="bookingModalTitle" data-html-en="Two quick <em>steps.</em>" data-html-es="Dos pasos <em>rápidos.</em>">Two quick <em>steps.</em></h2>
+    <h2 id="bookingModalTitle" data-html-en="Secure your <em>appointment.</em>" data-html-es="Asegura tu <em>cita.</em>">Secure your <em>appointment.</em></h2>
     <p class="modal-service" id="modalService"></p>
-    <p class="modal-lede" id="modalLede" data-en="Your time slot is only held once the deposit is in and the consent form is signed." data-es="Tu horario solo se aparta cuando recibimos el depósito y firmas el formulario de consentimiento.">Your time slot is only held once the deposit is in and the consent form is signed.</p>
 
-    <div class="step" id="stepDeposit">
-      <span class="step-num">1</span>
-      <div>
+    <div class="modal-tabs" role="tablist" aria-label="Booking steps">
+      <button class="modal-tab active" id="tabDepositBtn" role="tab" aria-selected="true" aria-controls="panelDeposit" type="button" data-en="Deposit" data-es="Depósito">Deposit</button>
+      <button class="modal-tab" id="tabNewBtn" role="tab" aria-selected="false" aria-controls="panelNew" type="button" data-en="New here? Click here" data-es="¿Primera vez? Haz clic aquí">New here? Click here</button>
+    </div>
+
+    <!-- ---------------- DEPOSIT TAB (default) ---------------- -->
+    <div class="modal-panel" id="panelDeposit" role="tabpanel" aria-labelledby="tabDepositBtn">
+      <p class="modal-lede" id="modalLede" data-en="Your time slot is only held once the deposit is in." data-es="Tu horario solo se aparta cuando recibimos el depósito.">Your time slot is only held once the deposit is in.</p>
+
+      <p class="newcomer-note" id="newcomerNote" data-en="First time at the studio? Tap “New here? Click here” above to sign the consent form before you send your deposit." data-es="¿Primera vez en el estudio? Toca “¿Primera vez? Haz clic aquí” arriba para firmar el formulario de consentimiento antes de enviar tu depósito.">First time at the studio? Tap “New here? Click here” above to sign the consent form before you send your deposit.</p>
+
+      <div class="step" id="stepDeposit">
         <h3 data-en="Send your $30 deposit" data-es="Envía tu depósito de $30">Send your $30 deposit</h3>
-        <p data-en="Send on Venmo or PayPal to Yuri Garcia Gonzalez, and put your name and the service in the note. The $30 comes off your total on the day. Deposits are not refunded." data-es="Envía por Venmo o PayPal a Yuri Garcia Gonzalez, y escribe tu nombre y el servicio en la nota. Los $30 se descuentan de tu total el día de la cita. Los depósitos no se reembolsan.">Send on Venmo or PayPal to Yuri Garcia Gonzalez, and put your name and the service in the note. The $30 comes off your total on the day. Deposits are not refunded.</p>
+        <p data-en="Choose any option below and put your name and the service in the note. The $30 comes off your total on the day. Deposits are not refunded." data-es="Elige cualquier opción de abajo y escribe tu nombre y el servicio en la nota. Los $30 se descuentan de tu total el día de la cita. Los depósitos no se reembolsan.">Choose any option below and put your name and the service in the note. The $30 comes off your total on the day. Deposits are not refunded.</p>
+
+        <div class="pay-grid">
+          <a class="pay-btn" id="venmoBtn" href="https://account.venmo.com/u/Yuri-Garcia-50" target="_blank" rel="noopener">
+            <span class="pay-name">Venmo</span>
+            <span class="pay-handle">@Yuri-Garcia-50</span>
+          </a>
+          <a class="pay-btn" id="paypalBtn" href="https://www.paypal.com/paypalme/YuriGarciaGonzalez" target="_blank" rel="noopener">
+            <span class="pay-name">PayPal</span>
+            <span class="pay-handle">Yuri Garcia Gonzalez</span>
+          </a>
+          <a class="pay-btn" id="cashappBtn" href="https://cash.app/$yurislashes20" target="_blank" rel="noopener">
+            <span class="pay-name">Cash App</span>
+            <span class="pay-handle">$yurislashes20</span>
+          </a>
+          <div class="pay-btn pay-btn-static">
+            <span class="pay-name">Zelle</span>
+            <span class="pay-handle" data-en="Yuri Garcia Gonzalez De Roca — look up by phone (484) 828-9258" data-es="Yuri Garcia Gonzalez De Roca — búscala por teléfono (484) 828-9258">Yuri Garcia Gonzalez De Roca — look up by phone (484) 828-9258</span>
+          </div>
+        </div>
       </div>
-      <div class="step-action">
-        <a class="step-btn" id="venmoBtn" href="https://account.venmo.com/u/Yuri-Garcia-50" target="_blank" rel="noopener" data-en="Pay $30 on Venmo" data-es="Pagar $30 por Venmo">Pay $30 on Venmo</a>
-        <a class="step-btn step-btn-alt" id="paypalBtn" href="https://www.paypal.com/paypalme/YuriGarciaGonzalez" target="_blank" rel="noopener" data-en="Pay $30 on PayPal" data-es="Pagar $30 por PayPal">Pay $30 on PayPal</a>
+
+      <div class="modal-confirm">
+        <label class="check" id="chkDepositWrap">
+          <input type="checkbox" id="chkDeposit">
+          <span data-en="I sent my deposit" data-es="Envié mi depósito">I sent my deposit</span>
+        </label>
+        <p class="modal-lede" id="noDepositNote" hidden data-en="No deposit is required for this service." data-es="Este servicio no requiere depósito.">No deposit is required for this service.</p>
+        <button class="modal-continue" id="modalContinue" type="button" disabled data-en="Continue to the calendar" data-es="Continuar al calendario">Continue to the calendar</button>
+        <p class="modal-foot" data-en="Questions? Message the studio on Instagram before you book." data-es="¿Dudas? Escríbele al estudio por Instagram antes de reservar.">Questions? Message the studio on Instagram before you book.</p>
       </div>
     </div>
 
-    <div class="step" id="stepForm">
-      <span class="step-num" id="stepFormNum">2</span>
-      <div>
-        <h3 data-en="Sign the consent form" data-es="Firma el formulario de consentimiento">Sign the consent form</h3>
-        <p data-en="One form per client, before your first appointment." data-es="Un formulario por clienta, antes de tu primera cita.">One form per client, before your first appointment.</p>
-      </div>
-      <div class="step-action">
-        <button class="step-btn" id="formToggle" type="button" data-en="Open the form" data-es="Abrir el formulario">Open the form</button>
-        <a class="step-alt" id="formRedirect" href="https://docs.google.com/forms/d/e/1FAIpQLSfFCVziXWLmgMneBZ3BWW5Nq6fq3tBhinnsw_2ZAYsflJknRg/viewform" target="_blank" rel="noopener" data-en="or open in a new tab" data-es="o ábrelo en una pestaña nueva">or open in a new tab</a>
-      </div>
-      <div class="form-embed" id="formEmbed" hidden>
+    <!-- ---------------- NEW HERE TAB ---------------- -->
+    <div class="modal-panel" id="panelNew" role="tabpanel" aria-labelledby="tabNewBtn" hidden>
+      <p class="modal-lede" data-en="First time at the studio? Sign the consent form right here, then tap the Deposit tab above to finish booking." data-es="¿Primera vez en el estudio? Firma el formulario de consentimiento aquí mismo, luego toca la pestaña Depósito arriba para terminar de reservar.">First time at the studio? Sign the consent form right here, then tap the Deposit tab above to finish booking.</p>
+      <div class="form-embed" id="formEmbed">
         <iframe id="formFrame" data-src="https://docs.google.com/forms/d/e/1FAIpQLSfFCVziXWLmgMneBZ3BWW5Nq6fq3tBhinnsw_2ZAYsflJknRg/viewform?embedded=true" title="Consent form">Loading…</iframe>
       </div>
+      <button class="step-btn" id="backToDepositBtn" type="button" data-en="← Back to deposit" data-es="← Volver al depósito">← Back to deposit</button>
     </div>
 
-    <div class="modal-confirm">
-      <label class="check" id="chkDepositWrap">
-        <input type="checkbox" id="chkDeposit">
-        <span data-en="I sent my $30 deposit" data-es="Envié mi depósito de $30">I sent my $30 deposit</span>
-      </label>
-      <label class="check">
-        <input type="checkbox" id="chkForm">
-        <span data-en="I signed the consent form" data-es="Firmé el formulario de consentimiento">I signed the consent form</span>
-      </label>
-      <button class="modal-continue" id="modalContinue" type="button" disabled data-en="Continue to the calendar" data-es="Continuar al calendario">Continue to the calendar</button>
-      <p class="modal-foot" data-en="Questions? Message the studio on Instagram before you book." data-es="¿Dudas? Escríbele al estudio por Instagram antes de reservar.">Questions? Message the studio on Instagram before you book.</p>
-    </div>
   </div>
 </div>
 
@@ -1152,40 +1195,56 @@
     })();
   })();
 
-  /* ---------- Pre-booking pop up: deposit + consent form ---------- */
+  /* ---------- Pre-booking pop up: deposit tab + new-client tab ---------- */
   (function(){
-    /* ---- EDIT THESE LINKS IF THEY EVER CHANGE ---- */
-    const VENMO_URL  = 'https://account.venmo.com/u/Yuri-Garcia-50';
-    const PAYPAL_URL = 'https://www.paypal.com/paypalme/YuriGarciaGonzalez';
-    const FORM_URL   = 'https://docs.google.com/forms/d/e/1FAIpQLSfFCVziXWLmgMneBZ3BWW5Nq6fq3tBhinnsw_2ZAYsflJknRg/viewform';
+    /* ---- EDIT THESE LINKS/HANDLES IF THEY EVER CHANGE ---- */
+    const VENMO_URL   = 'https://account.venmo.com/u/Yuri-Garcia-50';
+    const PAYPAL_URL  = 'https://www.paypal.com/paypalme/YuriGarciaGonzalez';
+    const CASHAPP_URL = 'https://cash.app/$yurislashes20';
+    const FORM_URL    = 'https://docs.google.com/forms/d/e/1FAIpQLSfFCVziXWLmgMneBZ3BWW5Nq6fq3tBhinnsw_2ZAYsflJknRg/viewform?embedded=true';
     /* Services that do not take a deposit — the deposit step is skipped for these */
     const NO_DEPOSIT_SLUGS = ['/brow-wax', '/mustach-wax'];
 
-    const modal      = document.getElementById('bookingModal');
+    const modal        = document.getElementById('bookingModal');
     if (!modal) return;
-    const serviceEl  = document.getElementById('modalService');
-    const stepDep    = document.getElementById('stepDeposit');
-    const stepFormNo = document.getElementById('stepFormNum');
-    const depWrap    = document.getElementById('chkDepositWrap');
-    const chkDep     = document.getElementById('chkDeposit');
-    const chkForm    = document.getElementById('chkForm');
-    const continueBtn= document.getElementById('modalContinue');
-    const formToggle  = document.getElementById('formToggle');
-    const formRedirect= document.getElementById('formRedirect');
-    const formEmbed   = document.getElementById('formEmbed');
-    const formFrame   = document.getElementById('formFrame');
-    const closeBtn    = document.getElementById('modalClose');
+    const serviceEl     = document.getElementById('modalService');
+    const stepDep        = document.getElementById('stepDeposit');
+    const depWrap         = document.getElementById('chkDepositWrap');
+    const chkDep           = document.getElementById('chkDeposit');
+    const noDepositNote     = document.getElementById('noDepositNote');
+    const newcomerNote       = document.getElementById('newcomerNote');
+    const continueBtn         = document.getElementById('modalContinue');
+    const closeBtn              = document.getElementById('modalClose');
 
-    document.getElementById('venmoBtn').href = VENMO_URL;
+    const tabDepositBtn = document.getElementById('tabDepositBtn');
+    const tabNewBtn     = document.getElementById('tabNewBtn');
+    const panelDeposit   = document.getElementById('panelDeposit');
+    const panelNew       = document.getElementById('panelNew');
+    const backToDepositBtn = document.getElementById('backToDepositBtn');
+    const formFrame      = document.getElementById('formFrame');
+
+    document.getElementById('venmoBtn').href  = VENMO_URL;
     document.getElementById('paypalBtn').href = PAYPAL_URL;
-    formRedirect.href = FORM_URL;
+    document.getElementById('cashappBtn').href = CASHAPP_URL;
 
     let targetUrl = null;
     let depositNeeded = true;
     let lastFocus = null;
 
     function updateContinue(){
-      continueBtn.disabled = !(chkForm.checked && (chkDep.checked || !depositNeeded));
+      continueBtn.disabled = !(!depositNeeded || chkDep.checked);
+    }
+
+    function showTab(tab){
+      const isDeposit = tab === 'deposit';
+      tabDepositBtn.classList.toggle('active', isDeposit);
+      tabNewBtn.classList.toggle('active', !isDeposit);
+      tabDepositBtn.setAttribute('aria-selected', isDeposit ? 'true' : 'false');
+      tabNewBtn.setAttribute('aria-selected', isDeposit ? 'false' : 'true');
+      panelDeposit.hidden = !isDeposit;
+      panelNew.hidden = isDeposit;
+      // load the consent form lazily, once, the first time the New tab is opened
+      if (!isDeposit && !formFrame.src) formFrame.src = formFrame.getAttribute('data-src');
     }
 
     function openModal(url, nameEn, nameEs){
@@ -1197,17 +1256,16 @@
       serviceEl.setAttribute('data-es', nameEs || nameEn || '');
       serviceEl.textContent = (document.body.getAttribute('data-lang') === 'es' ? (nameEs || nameEn) : nameEn) || '';
 
-      // deposit step only when the service takes one
+      // deposit block only when the service takes one
       stepDep.hidden = !depositNeeded;
       depWrap.hidden = !depositNeeded;
-      stepFormNo.textContent = depositNeeded ? '2' : '1';
+      newcomerNote.hidden = !depositNeeded;
+      noDepositNote.hidden = depositNeeded;
 
-      // fresh start every time
+      // fresh start every time — always land back on the Deposit tab
       chkDep.checked = false;
-      chkForm.checked = false;
       updateContinue();
-      formEmbed.hidden = true;
-      formToggle.textContent = formToggle.getAttribute('data-' + (document.body.getAttribute('data-lang') || 'en'));
+      showTab('deposit');
 
       lastFocus = document.activeElement;
       modal.hidden = false;
@@ -1247,19 +1305,11 @@
       openModal(link.href, nameEn, nameEs);
     });
 
-    // fill the form without leaving the page
-    formToggle.addEventListener('click', () => {
-      const show = formEmbed.hidden;
-      if (show && !formFrame.src) formFrame.src = formFrame.getAttribute('data-src');
-      formEmbed.hidden = !show;
-      const es = document.body.getAttribute('data-lang') === 'es';
-      formToggle.textContent = show
-        ? (es ? 'Ocultar el formulario' : 'Hide the form')
-        : (es ? 'Abrir el formulario' : 'Open the form');
-    });
+    tabDepositBtn.addEventListener('click', () => showTab('deposit'));
+    tabNewBtn.addEventListener('click', () => showTab('new'));
+    backToDepositBtn.addEventListener('click', () => showTab('deposit'));
 
     chkDep.addEventListener('change', updateContinue);
-    chkForm.addEventListener('change', updateContinue);
 
     continueBtn.addEventListener('click', () => {
       if (continueBtn.disabled || !targetUrl) return;
